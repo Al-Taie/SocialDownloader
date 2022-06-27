@@ -1,0 +1,30 @@
+ext {
+    compose_version = '1.2.0-rc02'
+    mapper_version = '1.5.2.Final'
+    room_version = '2.5.0-alpha02'
+    retrofit_version = '2.9.0'
+    okhttp_version = '5.0.0-alpha.9'
+    hilt_version = '2.42'
+    accompanist_version = '0.24.12-rc'
+
+    presentationDependencies = [
+            'androidx.core:core-ktx:1.8.0',
+            "androidx.compose.ui:ui:$compose_version",
+            'androidx.compose.material3:material3:1.0.0-alpha13',
+            "androidx.compose.ui:ui-tooling-preview:$compose_version",
+            'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1',
+            'androidx.activity:activity-compose:1.4.0',
+    ]
+
+    domainDependencies = [
+            "com.google.code.gson:gson:$retrofit_version",
+    ]
+
+    dataDependencies = [
+            "com.google.code.gson:gson:$retrofit_version",
+            "com.squareup.okhttp3:okhttp:$okhttp_version",
+            "com.squareup.retrofit2:retrofit:$retrofit_version",
+            "com.squareup.retrofit2:converter-gson:$retrofit_version",
+            "com.squareup.okhttp3:logging-interceptor:$okhttp_version",
+    ]
+}
