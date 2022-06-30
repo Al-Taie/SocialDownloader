@@ -9,6 +9,7 @@ java {
 }
 
 dependencies {
+    implementation project(':domain')
     for (dependency in rootProject.ext.dataDependencies)
         implementation(dependency)
 }

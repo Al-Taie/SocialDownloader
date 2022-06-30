@@ -9,6 +9,6 @@ java {
 }
 
 dependencies {
-    for (dependency in rootProject.ext.domainDependencies)
+    for (dependency in rootProject.ext.domainDependencies + rootProject.ext.dataDependencies)
         implementation(dependency)
 }

@@ -1,5 +1,5 @@
 ext {
-    compose_version = '1.2.0-rc02'
+    compose_version = '1.3.0-alpha01'
     mapper_version = '1.5.2.Final'
     room_version = '2.5.0-alpha02'
     retrofit_version = '2.9.0'
@@ -14,10 +14,21 @@ ext {
             "androidx.compose.ui:ui-tooling-preview:$compose_version",
             'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1',
             'androidx.activity:activity-compose:1.4.0',
+            'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.3',
+            'androidx.hilt:hilt-navigation-compose:1.0.0',
+            'androidx.navigation:navigation-compose:2.5.0-rc02',
+            "com.google.dagger:hilt-android:$hilt_version",
+            "androidx.compose.material:material-icons-core:$compose_version",
+            "androidx.compose.material:material-icons-extended:$compose_version",
+//            "com.github.skydoves:landscapist-coil:1.5.2",
+            "io.coil-kt:coil-compose:2.1.0",
+            "io.coil-kt:coil-gif:2.1.0",
+            "com.google.accompanist:accompanist-placeholder-material:$accompanist_version",
     ]
 
     domainDependencies = [
             "com.google.code.gson:gson:$retrofit_version",
+            'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.3',
     ]
 
     dataDependencies = [
@@ -26,5 +37,8 @@ ext {
             "com.squareup.retrofit2:retrofit:$retrofit_version",
             "com.squareup.retrofit2:converter-gson:$retrofit_version",
             "com.squareup.okhttp3:logging-interceptor:$okhttp_version",
+            'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.3',
+            'javax.inject:javax.inject:1'
+
     ]
 }
