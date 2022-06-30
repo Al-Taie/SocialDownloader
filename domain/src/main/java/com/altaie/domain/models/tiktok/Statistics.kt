@@ -1,4 +1,4 @@
-package com.altaie.data.models.tiktok
+package com.altaie.domain.models.tiktok
 
 
 import com.google.gson.annotations.SerializedName
@@ -7,23 +7,23 @@ data class Statistics(
     @SerializedName("aweme_id")
     val awesomeId: String? = null,
     @SerializedName("collect_count")
-    val collectCount: Int? = null,
+    val collectCount: Long? = null,
     @SerializedName("comment_count")
-    val commentCount: Int? = null,
+    val commentCount: Long? = null,
     @SerializedName("digg_count")
-    val diggCount: Int? = null,
+    val diggCount: Long? = null,
     @SerializedName("download_count")
-    val downloadCount: Int? = null,
+    val downloadCount: Long? = null,
     @SerializedName("forward_count")
-    val forwardCount: Int? = null,
+    val forwardCount: Long? = null,
     @SerializedName("lose_comment_count")
-    val loseCommentCount: Int? = null,
+    val loseCommentCount: Long? = null,
     @SerializedName("lose_count")
-    val loseCount: Int? = null,
+    val loseCount: Long? = null,
     @SerializedName("play_count")
-    val playCount: Int? = null,
+    val playCount: Long? = null,
     @SerializedName("share_count")
-    val shareCount: Int? = null,
+    val shareCount: Long? = null,
     @SerializedName("whatsapp_share_count")
-    val whatsappShareCount: Int? = null
+    val whatsappShareCount: Long? = null
 )

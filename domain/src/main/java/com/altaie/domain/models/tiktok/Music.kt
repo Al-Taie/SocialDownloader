@@ -1,4 +1,4 @@
-package com.altaie.data.models.tiktok
+package com.altaie.domain.models.tiktok
 
 
 import com.google.gson.annotations.SerializedName
@@ -14,4 +14,6 @@ data class Music(
     val playAddress: Address? = null,
     @SerializedName("title")
     val title: String? = null
-)
+) {
+    val url get() = playAddress?.url
+}
