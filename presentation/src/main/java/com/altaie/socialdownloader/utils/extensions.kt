@@ -2,12 +2,21 @@ package com.altaie.socialdownloader.utils
 
 import android.app.DownloadManager
 import android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+import android.content.ClipboardManager
 import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Context.DOWNLOAD_SERVICE
+import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import androidx.core.net.toUri
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -65,10 +74,10 @@ fun Context.downloadManager(
     username: String,
     socialName: String = "Tiktok",
     ext: MediaExtension = MediaExtension.VIDEO
-) {
+): Flow<DownloadStateRetriever.DownloadingState> {
     if (url == null) {
         toast("No url provided!")
-        return
+        return flow {}
     }
 
     val file = getExternalStorage(
@@ -83,5 +92,17 @@ fun Context.downloadManager(
         .setNotificationVisibility(VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         .setAllowedOverMetered(true)
 
-    (getSystemService(DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
+    val dm = (getSystemService(DOWNLOAD_SERVICE) as DownloadManager)
+    val id = dm.enqueue(request)
+
+    return DownloadStateRetriever(dm).retrieve(id)
+
 }
+
+fun Context.getFromClipBoard() : String? {
+    val clipBoardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+    return clipBoardManager.primaryClip?.getItemAt(0)?.text?.toString()
+}
+
+fun Cursor.column(which: String) = this.getColumnIndex(which)
+fun Cursor.intValue(which: String): Int = this.getInt(column(which))
