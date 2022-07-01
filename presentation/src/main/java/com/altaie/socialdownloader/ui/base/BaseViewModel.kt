@@ -31,6 +31,7 @@ abstract class BaseViewModel : ViewModel() {
         onComplete: suspend () -> Unit = {}
     ) {
         viewModelScope.launch {
+            liveValue.value = Resources.Loading
             repoValue
                 .catch { }
                 .onCompletion { onComplete() }

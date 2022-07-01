@@ -47,6 +47,7 @@ object NetworkModule {
     ): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(interceptor)
         .addInterceptor(loggingInterceptor)
+        .followRedirects(followRedirects = false)
         .build()
 
     @Singleton
@@ -55,7 +56,7 @@ object NetworkModule {
         with(chain) {
             proceed(
                 request = request().newBuilder()
-                    .addHeader("authority", "api-t2.tiktokv.com")
+//                    .addHeader("authority", "api-t2.tiktokv.com")
                     .addHeader("accept", "*/*")
                     .addHeader("Content-Type", "application/json")
                     .build()

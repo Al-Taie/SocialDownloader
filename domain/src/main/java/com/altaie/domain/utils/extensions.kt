@@ -18,3 +18,5 @@ fun Long.convertToSize(): String {
     val exp = (log10(this.toDouble()) / log10(1024.0)).toInt()
     return String.format("%.1f%cB", this / 1024.0.pow(exp.toDouble()), "KMGTPE"[exp - 1])
 }
+
+fun Regex.search(string: String) = find(string)?.groups?.last()?.value

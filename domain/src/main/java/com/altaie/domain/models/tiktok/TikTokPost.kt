@@ -34,6 +34,7 @@ data class TikTokPost(
         val video: Video? = null
     )
 
+    val socialName: String = "TikTok"
     val comments get() = awesomeDetail?.statistics?.commentCount?.convertNumber() ?: ""
     val downloads get() = awesomeDetail?.statistics?.downloadCount?.convertNumber() ?: ""
     val likes get() = awesomeDetail?.statistics?.diggCount?.convertNumber() ?: ""
@@ -43,8 +44,8 @@ data class TikTokPost(
     val shares get() = awesomeDetail?.statistics?.shareCount?.convertNumber() ?: ""
     val username get() = awesomeDetail?.author?.username ?: ""
     val views get() = awesomeDetail?.statistics?.playCount?.convertNumber() ?: ""
-    val videoUrl get() = awesomeDetail?.video?.url ?: ""
-    val audioUrl get() = awesomeDetail?.music?.url ?: ""
+    val videoUrl get() = awesomeDetail?.video?.url
+    val audioUrl get() = awesomeDetail?.music?.url
     val videoSize get() = awesomeDetail?.video?.size?.convertToSize() ?: "0B"
     val coverUrl get() = awesomeDetail?.video?.coverUrl
 }
