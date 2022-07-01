@@ -38,20 +38,23 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.altaie.domain.models.Resources
 import com.altaie.domain.models.tiktok.TikTokPost
+import com.altaie.socialdownloader.ui.common.CircleIndicator
 import com.altaie.socialdownloader.ui.theme.size
+import com.altaie.socialdownloader.utils.DownloadStateRetriever
 import com.altaie.socialdownloader.utils.MediaExtension
 import com.altaie.socialdownloader.utils.downloadManager
 import com.altaie.socialdownloader.utils.noWhitespace
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null) {
     var url by remember { mutableStateOf(data ?: "").also { viewModel.onEvent(it.value) } }
     val validateUrlState by remember { viewModel.validateUrlState }
-
+    var downloadProgress by remember { mutableStateOf(0) }
 
     Column(
         modifier = Modifier.padding(
@@ -94,19 +97,28 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null)
             Spacer(modifier = Modifier.height(MaterialTheme.size.large))
 
         Box(contentAlignment = Alignment.Center) {
-            Post(data = viewModel.post.value.toData ?: TikTokPost())
+            Post(data = viewModel.post.value.toData ?: TikTokPost()) {
+                downloadProgress = it
+            }
 
             if (viewModel.post.value is Resources.Loading)
                 CircularProgressIndicator(modifier = Modifier.padding(bottom = MaterialTheme.size.large - 3.dp))
+
+            CircleIndicator(
+                value = downloadProgress,
+                percentageEnabled = false,
+                modifier = Modifier.padding(bottom = MaterialTheme.size.large - 3.dp)
+            )
         }
     }
 }
 
 @Composable
-fun Post(modifier: Modifier = Modifier, data: TikTokPost) {
+fun Post(modifier: Modifier = Modifier, data: TikTokPost, downloadProgress: (Int) -> Unit) {
     var blur by remember { mutableStateOf(0f) }
     var opacity by remember { mutableStateOf(0f) }
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     Box(
         contentAlignment = Alignment.BottomEnd,
@@ -175,19 +187,33 @@ fun Post(modifier: Modifier = Modifier, data: TikTokPost) {
         FloatingActionButtonCustom(
             textVideoSize = data.videoSize,
             onAudioClicked = {
-                context.downloadManager(
-                    url = data.audioUrl,
-                    username = data.username,
-                    socialName = data.socialName,
-                    ext = MediaExtension.AUDIO
-                )
+                coroutineScope.launch {
+                    context.downloadManager(
+                        url = data.audioUrl,
+                        username = data.username,
+                        socialName = data.socialName,
+                        ext = MediaExtension.AUDIO
+                    ).collect {
+                        if (it is DownloadStateRetriever.DownloadingState.Downloading)
+                            downloadProgress(it.progress)
+                        else
+                            downloadProgress(0)
+                    }
+                }
             },
             onVideoClicked = {
-                context.downloadManager(
-                    url = data.videoUrl,
-                    username = data.username,
-                    socialName = data.socialName,
-                )
+                coroutineScope.launch {
+                    context.downloadManager(
+                        url = data.videoUrl,
+                        username = data.username,
+                        socialName = data.socialName,
+                    ).collect {
+                        if (it is DownloadStateRetriever.DownloadingState.Downloading)
+                            downloadProgress(it.progress)
+                        else
+                            downloadProgress(0)
+                    }
+                }
             }
         ) {
             blur = if (it) 7.dp.value else 0f
