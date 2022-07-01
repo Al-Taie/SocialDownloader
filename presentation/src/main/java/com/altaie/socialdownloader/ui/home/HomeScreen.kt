@@ -36,8 +36,12 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import coil.request.SuccessResult
+import com.altaie.domain.models.Resources
 import com.altaie.domain.models.tiktok.TikTokPost
 import com.altaie.socialdownloader.ui.theme.size
+import com.altaie.socialdownloader.utils.MediaExtension
+import com.altaie.socialdownloader.utils.downloadManager
+import com.altaie.socialdownloader.utils.noWhitespace
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
@@ -47,6 +51,7 @@ import com.google.accompanist.placeholder.material.shimmer
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null) {
     var url by remember { mutableStateOf(data ?: "").also { viewModel.onEvent(it.value) } }
     val validateUrlState by remember { viewModel.validateUrlState }
+
 
     Column(
         modifier = Modifier.padding(
@@ -60,7 +65,10 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null)
             TextField(
                 value = url,
                 singleLine = true,
-                onValueChange = { url = it.also { viewModel.onEvent(it) } },
+                onValueChange = { value ->
+                    url = value.noWhitespace()
+                    viewModel.onEvent(value)
+                },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { viewModel.onEvent(url) }),
                 placeholder = { Text("url", modifier = Modifier.alpha(.5f)) },
@@ -70,7 +78,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null)
             )
         }
 
-        if (!validateUrlState.isNullOrEmpty()) {
+        if (!validateUrlState.isNullOrEmpty() && url.isNotEmpty()) {
             Spacer(modifier = Modifier.height(MaterialTheme.size.small))
 
             Text(
@@ -85,15 +93,20 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null)
         if (data == null)
             Spacer(modifier = Modifier.height(MaterialTheme.size.large))
 
-        Post(data = viewModel.post.value.toData ?: TikTokPost())
-    }
+        Box(contentAlignment = Alignment.Center) {
+            Post(data = viewModel.post.value.toData ?: TikTokPost())
 
+            if (viewModel.post.value is Resources.Loading)
+                CircularProgressIndicator(modifier = Modifier.padding(bottom = MaterialTheme.size.large - 3.dp))
+        }
+    }
 }
 
 @Composable
 fun Post(modifier: Modifier = Modifier, data: TikTokPost) {
     var blur by remember { mutableStateOf(0f) }
     var opacity by remember { mutableStateOf(0f) }
+    val context = LocalContext.current
 
     Box(
         contentAlignment = Alignment.BottomEnd,
@@ -119,7 +132,7 @@ fun Post(modifier: Modifier = Modifier, data: TikTokPost) {
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(MaterialTheme.shapes.large),
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = .4f)
+                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = .4f)
                 ) {}
 
                 ProfileImage(
@@ -139,7 +152,7 @@ fun Post(modifier: Modifier = Modifier, data: TikTokPost) {
                             bottomEnd = MaterialTheme.shapes.large.bottomEnd,
                         )
                     )
-                    .background(MaterialTheme.colorScheme.onBackground.copy(alpha = .6f)),
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = .6f)),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 TextIcon(text = data.shares, icon = Icons.Outlined.Send)
@@ -155,12 +168,27 @@ fun Post(modifier: Modifier = Modifier, data: TikTokPost) {
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(MaterialTheme.shapes.large),
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = opacity)
+                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = opacity)
                 ) {}
         }
 
         FloatingActionButtonCustom(
             textVideoSize = data.videoSize,
+            onAudioClicked = {
+                context.downloadManager(
+                    url = data.audioUrl,
+                    username = data.username,
+                    socialName = data.socialName,
+                    ext = MediaExtension.AUDIO
+                )
+            },
+            onVideoClicked = {
+                context.downloadManager(
+                    url = data.videoUrl,
+                    username = data.username,
+                    socialName = data.socialName,
+                )
+            }
         ) {
             blur = if (it) 7.dp.value else 0f
             opacity = if (it) .75f else 0f
@@ -177,7 +205,7 @@ fun TextIcon(text: String, icon: ImageVector) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.background,
+            tint = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier
                 .size(24.dp)
                 .padding(vertical = 2.dp)
@@ -186,7 +214,7 @@ fun TextIcon(text: String, icon: ImageVector) {
         Text(
             text = text,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
@@ -202,6 +230,12 @@ fun FloatingActionButtonCustom(
     var currentRotation by remember { mutableStateOf(0f) }
     val rotation = remember { Animatable(currentRotation) }
 
+    fun reset() {
+        currentRotation = if (isFabClicked) 0f else 180f
+        isFabClicked = !isFabClicked
+        onClicked(isFabClicked)
+    }
+
     Column(horizontalAlignment = Alignment.End) {
         AnimatedVisibility(
             visible = isFabClicked,
@@ -212,26 +246,28 @@ fun FloatingActionButtonCustom(
                 FloatingActionTextButton(
                     text = textVideoSize,
                     imageVector = Icons.Outlined.Movie,
-                    onClick = onVideoClicked
+                    onClick = {
+                        onVideoClicked()
+                        reset()
+                    }
                 )
 
                 FloatingActionTextButton(
                     text = "",
                     imageVector = Icons.Outlined.MusicVideo,
-                    onClick = onAudioClicked
+                    onClick = {
+                        onAudioClicked()
+                        reset()
+                    }
                 )
             }
         }
 
         FloatingActionButton(
             modifier = Modifier.padding(bottom = 85.dp, end = 16.dp),
-            containerColor = MaterialTheme.colorScheme.surface,
+//            containerColor = MaterialTheme.colorScheme.surface,
             shape = CircleShape,
-            onClick = {
-                currentRotation = if (isFabClicked) 0f else 180f
-                isFabClicked = !isFabClicked
-                onClicked(isFabClicked)
-            }
+            onClick = ::reset
         ) {
             Icon(
                 imageVector = Icons.Outlined.ArrowDownward,
@@ -263,7 +299,7 @@ fun FloatingActionTextButton(
         ) {
             Text(
                 text = text,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
@@ -272,7 +308,7 @@ fun FloatingActionTextButton(
 
         FloatingActionButton(
             modifier = Modifier.padding(bottom = 16.dp),
-            containerColor = MaterialTheme.colorScheme.surface,
+//            containerColor = MaterialTheme.colorScheme.surface,
             shape = CircleShape,
             onClick = onClick
         ) {
