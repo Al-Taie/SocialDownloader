@@ -5,30 +5,25 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.getSystemService
 import com.altaie.socialdownloader.ui.home.HomeScreen
 import com.altaie.socialdownloader.ui.theme.SocialDownloaderTheme
 import com.altaie.socialdownloader.utils.toUrlOrNull
 import dagger.hilt.android.AndroidEntryPoint
-import java.net.URL
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val action: String? = intent?.action
         var data: Uri? = intent?.data
 
         intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
@@ -41,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                   HomeScreen(data = data.toUrlOrNull())
+                    HomeScreen(data = data.toUrlOrNull())
                 }
             }
         }

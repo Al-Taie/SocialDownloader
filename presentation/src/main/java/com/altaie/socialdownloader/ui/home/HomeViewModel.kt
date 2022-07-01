@@ -19,7 +19,6 @@ class HomeViewModel @Inject constructor(
     val validateUrlState = mutableStateOf<String?>(null)
     val post: MutableState<Resources<TikTokPost?>> = mutableStateOf(Resources.Init)
 
-
     fun onEvent(value: String) {
         ValidationUrlUseCase(url = value).run {
             if (isSuccessful) {
