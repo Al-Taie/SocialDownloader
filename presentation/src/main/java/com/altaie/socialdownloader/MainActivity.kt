@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.altaie.socialdownloader.ui.home.HomeScreen
 import com.altaie.socialdownloader.ui.theme.SocialDownloaderTheme
 import com.altaie.socialdownloader.utils.toUrlOrNull
@@ -24,6 +25,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        installSplashScreen()
+
         var data: Uri? = intent?.data
 
         intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
