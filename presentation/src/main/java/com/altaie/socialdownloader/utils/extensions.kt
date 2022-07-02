@@ -1,7 +1,7 @@
 package com.altaie.socialdownloader.utils
 
 import android.app.DownloadManager
-import android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+import android.app.DownloadManager.Request.*
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
@@ -84,9 +84,11 @@ fun Context.downloadManager(
     val request = DownloadManager.Request(url.toUri())
         .setTitle(appName)
         .setDescription("Downloading Post from @$username on $socialName...")
-        .setDestinationInExternalPublicDir(file.parent, file.name)
+        .setDestinationUri(file.toUri())
+        .setAllowedNetworkTypes(NETWORK_WIFI or NETWORK_MOBILE)
         .setNotificationVisibility(VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         .setAllowedOverMetered(true)
+        .setAllowedOverRoaming(false)
 
     val dm = (getSystemService(DOWNLOAD_SERVICE) as DownloadManager)
     val id = dm.enqueue(request)
