@@ -75,17 +75,14 @@ fun PostWidget(modifier: Modifier = Modifier, data: TikTokPost, downloadProgress
                     .background(MaterialTheme.colorScheme.primary.copy(alpha = .6f)),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                val textIconData = mapOf(
-                    data.shares to Icons.Outlined.Send,
-                    data.comments to Icons.Outlined.ChatBubbleOutline,
-                    data.likes to Icons.Outlined.FavoriteBorder,
-                    data.downloads to Icons.Outlined.FileDownload,
-                    data.views to Icons.Outlined.PlayArrow,
-                    data.saved to Icons.Outlined.BookmarkBorder,
-                )
-
-                for ((text, icon) in textIconData)
-                    TextIcon(text = text, icon = icon)
+                with(Icons.Outlined) {
+                    TextIcon(text = data.shares, icon = Send)
+                    TextIcon(text = data.comments, icon = ChatBubbleOutline)
+                    TextIcon(text = data.likes, icon = FavoriteBorder)
+                    TextIcon(text = data.downloads, icon = FileDownload)
+                    TextIcon(text = data.views, icon = PlayArrow)
+                    TextIcon(text = data.saved, icon = BookmarkBorder)
+                }
             }
 
             // Blur Not supported in Android less than API 31
