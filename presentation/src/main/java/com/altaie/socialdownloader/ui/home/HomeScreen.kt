@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,7 @@ import com.altaie.socialdownloader.ui.home.common.PostWidget
 import com.altaie.socialdownloader.ui.theme.size
 import com.altaie.socialdownloader.utils.Constants.DOWNLOADED_SUCCESSFULLY
 import com.altaie.socialdownloader.utils.Constants.STATUS_DOWNLOAD_COMPLETE
+import com.altaie.socialdownloader.utils.Constants.URL_PLACEHOLDER
 import com.altaie.socialdownloader.utils.noWhitespace
 import com.altaie.socialdownloader.utils.toast
 
@@ -55,7 +57,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null)
                 },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { viewModel.onEvent(url) }),
-                placeholder = { Text("url", modifier = Modifier.alpha(.5f)) },
+                placeholder = { Text(stringResource(id = URL_PLACEHOLDER), modifier = Modifier.alpha(.5f)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(MaterialTheme.shapes.large)
@@ -85,7 +87,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null)
 
                 // Show toast when download is complete
                 if (progress == STATUS_DOWNLOAD_COMPLETE) {
-                    context.toast(DOWNLOADED_SUCCESSFULLY)
+                    context.toast(context.getString(DOWNLOADED_SUCCESSFULLY))
                 }
             }
 

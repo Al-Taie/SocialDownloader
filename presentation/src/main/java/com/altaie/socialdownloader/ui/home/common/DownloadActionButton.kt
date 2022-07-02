@@ -5,6 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import com.altaie.domain.models.tiktok.TikTokPost
+import com.altaie.socialdownloader.utils.Constants.DOWNLOAD_CANCELED
+import com.altaie.socialdownloader.utils.Constants.DOWNLOAD_FAILED
+import com.altaie.socialdownloader.utils.Constants.DOWNLOAD_PENDING
+import com.altaie.socialdownloader.utils.Constants.STATUS_DOWNLOAD_INITIALIZED
 import com.altaie.socialdownloader.utils.DownloadStateRetriever
 import com.altaie.socialdownloader.utils.MediaExtension
 import com.altaie.socialdownloader.utils.downloadManager
@@ -66,13 +70,17 @@ private fun handleDownload(
             when (it) {
                 is DownloadStateRetriever.DownloadingState.Downloading -> downloadProgress(it.progress)
                 is DownloadStateRetriever.DownloadingState.Failed -> {
-                    downloadProgress(0)
-                    context.toast("Download Failed!")
+                    downloadProgress(STATUS_DOWNLOAD_INITIALIZED)
+                    context.toast(context.getString(DOWNLOAD_FAILED))
                 }
-                is DownloadStateRetriever.DownloadingState.Pending -> context.toast("Download Pending!")
+                is DownloadStateRetriever.DownloadingState.Pending -> context.toast(
+                    context.getString(
+                        DOWNLOAD_PENDING
+                    )
+                )
                 is DownloadStateRetriever.DownloadingState.Canceled -> {
-                    downloadProgress(0)
-                    context.toast("Download Canceled!")
+                    downloadProgress(STATUS_DOWNLOAD_INITIALIZED)
+                    context.toast(context.getString(DOWNLOAD_CANCELED))
                 }
             }
         }

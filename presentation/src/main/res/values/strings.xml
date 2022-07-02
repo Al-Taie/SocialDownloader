@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Social Downloader</string>
+    <string name="downloaded_successfully">Downloaded Successfully</string>
+    <string name="url_placeholder">url</string>
+    <string name="download_failed">Download Failed!</string>
+    <string name="download_canceled">Download Canceled!</string>
+    <string name="download_pending">Download Pending!</string>
 </resources>
