@@ -1,7 +1,7 @@
 package com.altaie.socialdownloader.di
 
 import com.altaie.domain.repositories.TikTokRepository
-import com.altaie.domain.usecases.GetIdFromShortLinkUseCase
+import com.altaie.domain.usecases.GetIdFromUrlUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +14,6 @@ object AppModules {
 
     @Provides
     @Singleton
-    fun provideGetIdFromShortLinkUseCase(repository: TikTokRepository) = GetIdFromShortLinkUseCase(repository)
+    fun provideGetIdFromShortLinkUseCase(repository: TikTokRepository) = GetIdFromUrlUseCase(repository)
 
 }
