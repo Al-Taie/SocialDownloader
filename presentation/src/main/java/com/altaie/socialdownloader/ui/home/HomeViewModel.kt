@@ -22,6 +22,8 @@ class HomeViewModel @Inject constructor(
     fun onEvent(value: String) {
         launch {
             with(ValidationUrlUseCase(url = value)) {
+                if (isShortLink) post.value = Resources.Loading
+
                 validateUrlState.value = if (isSuccessful)
                     getIdFromUrlUseCase(this).run {
                         if (isSuccessful) getPost(id = data)
@@ -32,7 +34,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getPost(id: String) {
-        collectResourceValue(repository.getPost(id = id), post)
-    }
+    private fun getPost(id: String) = collectResourceValue(repository.getPost(id = id), post)
+
 }
