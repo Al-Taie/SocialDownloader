@@ -31,7 +31,9 @@ import com.altaie.socialdownloader.utils.toast
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null) {
-    var url by remember { mutableStateOf(data ?: "").also { viewModel.onEvent(it.value) } }
+    LaunchedEffect(key1 = data) { data?.let(viewModel::onEvent) }
+
+    var url by remember { mutableStateOf(data ?: "") }
     val validateUrlState by remember { viewModel.validateUrlState }
     val context = LocalContext.current
 
@@ -49,10 +51,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null)
             TextField(
                 value = url,
                 singleLine = true,
-                onValueChange = { value ->
-                    url = value.noWhitespace()
-                    viewModel.onEvent(value)
-                },
+                onValueChange = { url = it.noWhitespace().also(viewModel::onEvent) },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { viewModel.onEvent(url) }),
                 placeholder = {

@@ -1,5 +1,7 @@
 package com.altaie.socialdownloader.ui.common
 
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
@@ -22,6 +24,8 @@ fun FloatingActionTextButton(
     imageVector: ImageVector,
     onClick: () -> Unit
 ) {
+    val android12AndUp = SDK_INT >= VERSION_CODES.S
+
     Row(
         modifier = Modifier.padding(end = 16.dp)
     ) {
@@ -31,7 +35,12 @@ fun FloatingActionTextButton(
         ) {
             Text(
                 text = text,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = with(MaterialTheme.colorScheme) {
+                    if (android12AndUp)
+                        onPrimary
+                    else
+                        onPrimaryContainer
+                },
                 style = MaterialTheme.typography.bodyMedium,
             )
         }

@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            SocialDownloaderTheme(dynamicColor = false) {
+            SocialDownloaderTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -52,8 +52,6 @@ class MainActivity : ComponentActivity() {
         var result: Int
         val listPermissionsNeeded: MutableList<String> = ArrayList()
         val permissions = arrayOf(
-            Manifest.permission.INTERNET,
-            Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
         )
