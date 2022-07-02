@@ -16,13 +16,16 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.altaie.domain.models.tiktok.TikTokPost
+import com.altaie.socialdownloader.ui.common.CircleIndicator
 import com.altaie.socialdownloader.ui.common.DynamicImage
 import com.altaie.socialdownloader.ui.common.TextIcon
+import com.altaie.socialdownloader.ui.theme.size
 
 @Composable
-fun PostWidget(modifier: Modifier = Modifier, data: TikTokPost, downloadProgress: (Int) -> Unit) {
+fun PostWidget(modifier: Modifier = Modifier, data: TikTokPost, onDownloadProgress: (Int) -> Unit) {
     var blur by remember { mutableStateOf(0f) }
     var opacity by remember { mutableStateOf(0f) }
+    var downloadProgress by remember { mutableStateOf(0) }
 
     Box(
         contentAlignment = Alignment.BottomEnd,
@@ -57,6 +60,13 @@ fun PostWidget(modifier: Modifier = Modifier, data: TikTokPost, downloadProgress
                 ProfileImage(
                     url = data.profileImageUrl,
                     username = data.username
+                )
+
+                // progress bar for post downloading
+                CircleIndicator(
+                    value = downloadProgress,
+                    percentageEnabled = false,
+                    modifier = Modifier.padding(bottom = MaterialTheme.size.large - 3.dp)
                 )
             }
 
@@ -98,7 +108,13 @@ fun PostWidget(modifier: Modifier = Modifier, data: TikTokPost, downloadProgress
         }
 
         // Post Download Action Button
-        DownloadActionButton(data = data, downloadProgress = downloadProgress) {
+        DownloadActionButton(
+            data = data,
+            downloadProgress = {
+                downloadProgress = it
+                onDownloadProgress(it)
+            },
+        ) {
             blur = if (it) 7.dp.value else 0f
             opacity = if (it) .75f else 0f
         }

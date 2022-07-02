@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.altaie.domain.models.Resources
 import com.altaie.domain.models.tiktok.TikTokPost
-import com.altaie.socialdownloader.ui.common.CircleIndicator
 import com.altaie.socialdownloader.ui.home.common.PostWidget
 import com.altaie.socialdownloader.ui.theme.size
 import com.altaie.socialdownloader.utils.Constants.DOWNLOADED_SUCCESSFULLY
@@ -34,7 +33,6 @@ import com.altaie.socialdownloader.utils.toast
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null) {
     var url by remember { mutableStateOf(data ?: "").also { viewModel.onEvent(it.value) } }
     val validateUrlState by remember { viewModel.validateUrlState }
-    var downloadProgress by remember { mutableStateOf(0) }
     val context = LocalContext.current
 
     Column(
@@ -57,7 +55,12 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null)
                 },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { viewModel.onEvent(url) }),
-                placeholder = { Text(stringResource(id = URL_PLACEHOLDER), modifier = Modifier.alpha(.5f)) },
+                placeholder = {
+                    Text(
+                        stringResource(id = URL_PLACEHOLDER),
+                        modifier = Modifier.alpha(.5f)
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(MaterialTheme.shapes.large)
@@ -83,8 +86,6 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null)
         // A container for PostWidget & Progress Indicators
         Box(contentAlignment = Alignment.Center) {
             PostWidget(data = viewModel.post.value.toData ?: TikTokPost()) { progress ->
-                downloadProgress = progress
-
                 // Show toast when download is complete
                 if (progress == STATUS_DOWNLOAD_COMPLETE) {
                     context.toast(context.getString(DOWNLOADED_SUCCESSFULLY))
@@ -94,13 +95,6 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null)
             // Show progress bar when post loading
             if (viewModel.post.value is Resources.Loading)
                 CircularProgressIndicator(modifier = Modifier.padding(bottom = MaterialTheme.size.large - 3.dp))
-
-            // progress bar for post downloading
-            CircleIndicator(
-                value = downloadProgress,
-                percentageEnabled = false,
-                modifier = Modifier.padding(bottom = MaterialTheme.size.large - 3.dp)
-            )
         }
     }
 }

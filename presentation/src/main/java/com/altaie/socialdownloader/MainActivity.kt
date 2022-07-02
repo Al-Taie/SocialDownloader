@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            SocialDownloaderTheme {
+            SocialDownloaderTheme(dynamicColor = false) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
