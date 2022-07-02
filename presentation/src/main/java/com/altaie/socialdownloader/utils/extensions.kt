@@ -9,14 +9,10 @@ import android.content.Context.DOWNLOAD_SERVICE
 import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
-import android.util.Log
 import android.widget.Toast
 import androidx.core.net.toUri
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -96,13 +92,12 @@ fun Context.downloadManager(
     val id = dm.enqueue(request)
 
     return DownloadStateRetriever(dm).retrieve(id)
-
 }
 
-fun Context.getFromClipBoard() : String? {
+fun Context.getFromClipBoard(): String? {
     val clipBoardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
     return clipBoardManager.primaryClip?.getItemAt(0)?.text?.toString()
 }
 
-fun Cursor.column(which: String) = this.getColumnIndex(which)
-fun Cursor.intValue(which: String): Int = this.getInt(column(which))
+fun Cursor.column(which: String) = getColumnIndex(which)
+fun Cursor.intValue(which: String) = try{ getInt(column(which)) } catch (e: Exception) { 0 }

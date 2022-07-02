@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class DownloadStateRetriever(private val downloadManager: DownloadManager) {
     fun retrieve(id: Long) = flow {
         val downloading = AtomicBoolean(true)
+        val isPending = AtomicBoolean(false)
 
         while (downloading.get()) {
             val query = DownloadManager.Query().setFilterById(id)
@@ -23,22 +24,36 @@ class DownloadStateRetriever(private val downloadManager: DownloadManager) {
 
             if (isSuccessful(cursor)) downloading.set(false)
 
-            if (isFailure(cursor)) {
+            if (isFailed(cursor)) {
                 downloading.set(false)
-                emit(DownloadingState.Failure)
+                emit(DownloadingState.Failed)
+            }
+
+            if (isCanceled(cursor)) {
+                downloading.set(false)
+                emit(DownloadingState.Canceled)
+            }
+
+            if (isPending(cursor) && !isPending.get()) {
+                isPending.set(true)
+                emit(DownloadingState.Pending)
             }
 
             cursor.close()
 
             emit(DownloadingState.Downloading(bytesDownloaded, bytesTotal))
 
-            if (downloading.get()) delay(100)
+            if (downloading.get()) delay(150)
         }
     }.flowOn(Dispatchers.IO)
 
     private fun isSuccessful(cursor: Cursor) = status(cursor) == DownloadManager.STATUS_SUCCESSFUL
 
-    private fun isFailure(cursor: Cursor) = status(cursor) == DownloadManager.STATUS_FAILED
+    private fun isFailed(cursor: Cursor) = status(cursor) == DownloadManager.STATUS_FAILED
+
+    private fun isPending(cursor: Cursor) = status(cursor) == DownloadManager.STATUS_PENDING
+
+    private fun isCanceled(cursor: Cursor) = status(cursor) == 0
 
     private fun status(cursor: Cursor) = cursor.intValue(DownloadManager.COLUMN_STATUS)
 
@@ -46,6 +61,8 @@ class DownloadStateRetriever(private val downloadManager: DownloadManager) {
         data class Downloading(val downloadedBytes: Int, val totalBytes: Int) : DownloadingState() {
             val progress = if (totalBytes == 0) 0 else ((downloadedBytes * 100) / totalBytes)
         }
-        object Failure : DownloadingState()
+        object Failed : DownloadingState()
+        object Pending : DownloadingState()
+        object Canceled : DownloadingState()
     }
 }
