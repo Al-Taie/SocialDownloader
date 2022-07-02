@@ -22,16 +22,12 @@ class HomeViewModel @Inject constructor(
     fun onEvent(value: String) {
         launch {
             with(ValidationUrlUseCase(url = value)) {
-                validateUrlState.value = if (isSuccessful) {
+                validateUrlState.value = if (isSuccessful)
                     getIdFromUrlUseCase(this).run {
-                        if (isSuccessful) {
-                            getPost(id = data)
-                        }
+                        if (isSuccessful) getPost(id = data)
                         errorMessage
                     }
-                } else {
-                    errorMessage
-                }
+                else errorMessage
             }
         }
     }
