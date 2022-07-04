@@ -1,19 +1,19 @@
-package com.altaie.domain.models.tiktok
+package com.altaie.data.models.tiktok
 
 
 import com.google.gson.annotations.SerializedName
 
-data class Video(
+data class VideoDto(
     @SerializedName("cover")
-    val coverAddress: Address? = null,
+    val coverAddress: AddressDto? = null,
     @SerializedName("download_addr")
-    val downloadAddress: Address? = null,
+    val downloadAddress: AddressDto? = null,
     @SerializedName("duration")
     val duration: Long? = null,
     @SerializedName("dynamic_cover")
-    val dynamicCoverAddress: Address? = null,
+    val dynamicCoverAddress: AddressDto? = null,
     @SerializedName("play_addr")
-    val playAddress: Address? = null
+    val playAddress: AddressDto? = null
 ) {
     val url get() = playAddress?.url
     val size get() = playAddress?.dataSize

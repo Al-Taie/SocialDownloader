@@ -3,7 +3,11 @@ package com.altaie.domain.utils
 import kotlin.math.log10
 import kotlin.math.pow
 
-fun Long.convertNumber(): String {
+fun Long?.convertNumber(): String {
+    if (this == null) {
+        return ""
+    }
+
     if (this < 1000) {
         return this.toString()
     }

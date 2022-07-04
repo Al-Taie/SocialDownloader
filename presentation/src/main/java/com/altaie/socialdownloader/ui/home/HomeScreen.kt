@@ -18,7 +18,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.altaie.domain.models.Resources
+import com.altaie.domain.models.Resource
 import com.altaie.domain.models.tiktok.TikTokPost
 import com.altaie.socialdownloader.ui.home.common.PostWidget
 import com.altaie.socialdownloader.ui.theme.size
@@ -92,7 +92,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), data: String? = null)
             }
 
             // Show progress bar when post loading
-            if (viewModel.post.value is Resources.Loading)
+            if (viewModel.post.value is Resource.Loading)
                 CircularProgressIndicator(modifier = Modifier.padding(bottom = MaterialTheme.size.large - 3.dp))
         }
     }

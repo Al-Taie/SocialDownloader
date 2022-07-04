@@ -1,9 +1,9 @@
-package com.altaie.domain.models.tiktok
+package com.altaie.data.models.tiktok
 
 
 import com.google.gson.annotations.SerializedName
 
-data class Statistics(
+data class StatisticsDto(
     @SerializedName("aweme_id")
     val awesomeId: String? = null,
     @SerializedName("collect_count")
