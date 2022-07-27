@@ -14,7 +14,7 @@ class TikTokRepositoryImpl @Inject constructor(
     private val apiService: TikTokApiService
 ) : TikTokRepository {
     override fun getPost(id: String) =
-        wrapWithFlow({ apiService.getPost(id = id) }) { it?.toModel() }
+        wrapWithFlow({ apiService.getPost(id = id) }) { it.toModel() }
 
     override suspend fun getRedirectUrl(url: String) = withContext(Dispatchers.IO) {
         val okHttpClient = OkHttpClient

@@ -15,7 +15,11 @@ fun Long?.convertNumber(): String {
     return String.format("%.1f%c", this / 1000.0.pow(exp.toDouble()), "kMGTPE"[exp - 1])
 }
 
-fun Long.convertToSize(): String {
+fun Long?.convertToSize(): String {
+    if (this == null) {
+        return "0B"
+    }
+
     if (this < 1024) {
         return this.toString() + "KB"
     }

@@ -4,10 +4,9 @@ import com.altaie.data.models.tiktok.TikTokPostDto
 import com.altaie.domain.models.tiktok.TikTokPost
 import com.altaie.domain.utils.convertNumber
 import com.altaie.domain.utils.convertToSize
-import retrofit2.Response
 
-fun TikTokPostDto.toModel(): TikTokPost {
-    if (awesomeDetail == null) {
+fun TikTokPostDto?.toModel(): TikTokPost {
+    if (this?.awesomeDetail == null) {
         return TikTokPost()
     }
     return with(awesomeDetail) {
@@ -18,7 +17,7 @@ fun TikTokPostDto.toModel(): TikTokPost {
             nickname = author?.nickname ?: "",
             username = author?.username ?: "",
             profileImageUrl = author?.profileImageUrl ?: "",
-            videoSize = video?.size?.convertToSize() ?: "0B",
+            videoSize = video?.size.convertToSize(),
             views = statistics?.playCount.convertNumber(),
             likes = statistics?.diggCount.convertNumber(),
             shares = statistics?.shareCount.convertNumber(),
